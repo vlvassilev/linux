@@ -115,12 +115,22 @@ static int validate_master(const struct ubifs_info *c)
 		goto out;
 	}
 
-	if (c->lhead_lnum < UBIFS_LOG_LNUM ||
-	    c->lhead_lnum >= UBIFS_LOG_LNUM + c->log_lebs ||
-	    c->lhead_offs < 0 || c->lhead_offs >= c->leb_size ||
-	    c->lhead_offs & (c->min_io_size - 1)) {
-		err = 4;
-		goto out;
+	if (c->min_io_shift) {
+		if (c->lhead_lnum < UBIFS_LOG_LNUM ||
+		    c->lhead_lnum >= UBIFS_LOG_LNUM + c->log_lebs ||
+		    c->lhead_offs < 0 || c->lhead_offs >= c->leb_size ||
+		    c->lhead_offs & (c->min_io_size - 1)) {
+			err = 4;
+			goto out;
+		}
+	} else {
+		if (c->lhead_lnum < UBIFS_LOG_LNUM ||
+		    c->lhead_lnum >= UBIFS_LOG_LNUM + c->log_lebs ||
+		    c->lhead_offs < 0 || c->lhead_offs >= c->leb_size ||
+		    c->lhead_offs % c->min_io_size) {
+			err = 4;
+			goto out;
+		}
 	}
 
 	if (c->zroot.lnum >= c->leb_cnt || c->zroot.lnum < c->main_first ||
@@ -352,10 +362,9 @@ int ubifs_read_master(struct ubifs_info *c)
  * ubifs_write_master - write master node.
  * @c: UBIFS file-system description object
  *
- * This function writes the master node. The caller has to take the
- * @c->mst_mutex lock before calling this function. Returns zero in case of
- * success and a negative error code in case of failure. The master node is
- * written twice to enable recovery.
+ * This function writes the master node. Returns zero in case of success and a
+ * negative error code in case of failure. The master node is written twice to
+ * enable recovery.
  */
 int ubifs_write_master(struct ubifs_info *c)
 {

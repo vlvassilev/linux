@@ -34,13 +34,15 @@
 	register unsigned long long __n   asm("r0") = n;	\
 	register unsigned long long __res asm("r2");		\
 	register unsigned int __rem       asm(__xh);		\
+	register unsigned int __clobber   asm(__xl);		\
 	asm(	__asmeq("%0", __xh)				\
-		__asmeq("%1", "r2")				\
-		__asmeq("%2", "r0")				\
-		__asmeq("%3", "r4")				\
+		__asmeq("%1", __xl)				\
+		__asmeq("%2", "r2")				\
+		__asmeq("%3", "r0")				\
+		__asmeq("%4", "r4")				\
 		"bl	__do_div64"				\
-		: "=r" (__rem), "=r" (__res)			\
-		: "r" (__n), "r" (__base)			\
+		: "=r"(__rem), "=r"(__clobber), "=r"(__res)	\
+		: "r"(__n), "r"(__base)				\
 		: "ip", "lr", "cc");				\
 	n = __res;						\
 	__rem;							\
@@ -156,7 +158,7 @@
 		/* Select the best insn combination to perform the   */	\
 		/* actual __m * __n / (__p << 64) operation.         */	\
 		if (!__c) {						\
-			asm (	"umull	%Q0, %R0, %1, %Q2\n\t"		\
+			asm (	"umull	%Q0, %R0, %Q1, %Q2\n\t"		\
 				"mov	%Q0, #0"			\
 				: "=&r" (__res)				\
 				: "r" (__m), "r" (__n)			\

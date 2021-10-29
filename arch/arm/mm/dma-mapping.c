@@ -350,6 +350,9 @@ static int __init atomic_pool_init(void)
 	void *ptr;
 	int bitmap_size = BITS_TO_LONGS(nr_pages) * sizeof(long);
 
+	if (bitmap_size == 0)
+		return 0;
+
 	bitmap = kzalloc(bitmap_size, GFP_KERNEL);
 	if (!bitmap)
 		goto no_bitmap;
@@ -668,8 +671,14 @@ static void *__dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 
 	if (is_coherent || nommu())
 		addr = __alloc_simple_buffer(dev, size, gfp, &page);
-	else if (!(gfp & __GFP_WAIT))
+#if 0	
+	else if (!(gfp & __GFP_WAIT)) {
 		addr = __alloc_from_pool(size, &page);
+		BUG();
+		this BUG is never hit, so dma coherent pool is not used
+	}
+
+#endif	
 	else if (!IS_ENABLED(CONFIG_CMA))
 		addr = __alloc_remap_buffer(dev, size, gfp, prot, &page, caller);
 	else
@@ -1311,7 +1320,7 @@ static void *arm_iommu_alloc_attrs(struct device *dev, size_t size,
 	*handle = DMA_ERROR_CODE;
 	size = PAGE_ALIGN(size);
 
-	if (gfp & GFP_ATOMIC)
+	if (!(gfp & __GFP_WAIT))
 		return __iommu_alloc_atomic(dev, size, handle);
 
 	pages = __iommu_alloc_buffer(dev, size, gfp, attrs);
