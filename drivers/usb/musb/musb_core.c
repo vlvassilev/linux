@@ -924,7 +924,7 @@ b_host:
 	return handled;
 }
 
-extern int android_usb_ready(void);
+//extern int android_usb_ready(void);
 
 static ssize_t
 musb_speed_show(struct device *dev, struct device_attribute *attr, char *buf)
@@ -1004,7 +1004,7 @@ void musb_start(struct musb *musb)
 	devctl = musb_readb(regs, MUSB_DEVCTL);
 	devctl &= ~MUSB_DEVCTL_SESSION;
 
-	if (android_usb_ready()) {
+	if (1/*android_usb_ready()*/) {
 		/* session started after:
 		 * (a) ID-grounded irq, host mode;
 		 * (b) vbus present/connect IRQ, peripheral mode;

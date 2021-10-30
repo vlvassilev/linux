@@ -523,7 +523,7 @@
         .ldoMMCIsHigh                = TRUE,                            \
         .ldoIbrIsHigh                = FALSE,                           \
         .ldoRfIs2_8                  = TRUE,                            \
-        .ldoPadIs2_8                 = TRUE,                            \
+        .ldoPadIs2_8                 = FALSE,                            \
         .lowerVPadLowPower           = FALSE,                           \
         .vBuck1LowPower              = 6,                               \
         .vBuck3LowPower              = 12,                              \
@@ -566,7 +566,6 @@
     { { 50, 33220 }, { 57, 25060 } }
 
 #endif // TGT_PMD_CONFIG
-
 
 // =============================================================================
 // TGT_AUD_CONFIG

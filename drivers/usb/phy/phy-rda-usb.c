@@ -74,7 +74,7 @@ static struct wake_lock vbus_lock;
 static struct workqueue_struct *usb_otg_wq = NULL;
 static struct clk *clk; /* 'usb' clock, enable/disable it when the cable is plugged in/out */
 
-extern int android_usb_ready(void);
+//extern int android_usb_ready(void);
 extern int musb_g_addressed(struct usb_gadget *gadget);
 extern int musb_disconnect_gadget(struct usb_gadget *gadget);
 extern int rda_modem_charger_enable(int enable);
@@ -284,7 +284,7 @@ static void gpio_vbus_work(struct work_struct *work)
 		/* if android usb function don't ready, the usb will not work,
 		 * so delay a rather long time.
 		 */
-		if (android_usb_ready())
+		if (/*android_usb_ready()*/1)
 			delay = 20 * HZ;
 		else
 			delay = 60 * HZ;

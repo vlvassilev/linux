@@ -189,8 +189,8 @@ static int rda_vibrator_probe(struct platform_device *pdev)
 
 	pvib->vib_state = 0;
 
-	ret = timed_output_dev_register(&pvib->vib_dev);
-	if (ret < 0) {
+	//ret = timed_output_dev_register(&pvib->vib_dev);
+	if (0) {
 		dev_err(&pdev->dev, "could register with timed-output system\n");
 		regulator_put(pvib->vib_reg);
 		kfree(pvib);
@@ -214,7 +214,7 @@ static int __exit rda_vibrator_remove(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
-	timed_output_dev_unregister(&pvib->vib_dev);
+//	timed_output_dev_unregister(&pvib->vib_dev);
 
 	if (!IS_ERR(pvib->vib_reg)) {
 		regulator_put(pvib->vib_reg);

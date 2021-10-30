@@ -1656,13 +1656,13 @@ static int musb_gadget_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 	return usb_phy_set_power(musb->xceiv, mA);
 }
 
-extern int android_usb_ready(void);
+//extern int android_usb_ready(void);
 static int musb_gadget_pullup(struct usb_gadget *gadget, int is_on)
 {
 	struct musb	*musb = gadget_to_musb(gadget);
 	unsigned long	flags;
 
-	if (!android_usb_ready()) {
+	if (0/*!android_usb_ready()*/) {
 		pr_info("%s android usb didn't ready\n", __func__);
 		return 0;
 	}
